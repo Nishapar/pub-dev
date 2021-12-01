@@ -2,6 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
+import 'package:pub_dev/frontend/static_files.dart';
+
 final _none = <String>["'none'"];
 
 /// Content Security Policy (CSP) is an added layer of security that helps to
@@ -32,6 +37,7 @@ final _defaultContentSecurityPolicyMap = <String, List<String>>{
   'script-src': <String>[
     // See: https://developers.google.com/tag-manager/web/csp
     "'self'",
+    "'unsafe-hashes'",
     'https://tagmanager.google.com',
     'https://www.googletagmanager.com/',
     'https://www.google.com/',
@@ -44,6 +50,7 @@ final _defaultContentSecurityPolicyMap = <String, List<String>>{
     'https://www.gstatic.com/',
     'https://apis.google.com/',
     'https://gstatic.com',
+    "'sha256-${_sha256(staticUrls.getAssetContentAsString('/static/highlight/init.js'))}'",
   ],
   'style-src': <String>[
     "'self'",
@@ -69,4 +76,8 @@ String _serializeCSP(Map<String, String>? extraValues) {
     final extraStr = (extra == null || extra.trim().isEmpty) ? '' : ' $extra';
     return '$key ${list!.join(' ')}$extraStr';
   }).join(';');
+}
+
+String _sha256(String content) {
+  return base64.encode(sha256.convert(utf8.encode(content)).bytes);
 }

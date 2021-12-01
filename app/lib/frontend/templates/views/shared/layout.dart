@@ -209,10 +209,18 @@ d.Node pageLayoutNode({
             if (includeHighlightJs)
               d.fragment([
                 d.script(
-                    src: staticUrls
-                        .getAssetUrl('/static/highlight/highlight.pack.js')),
-                d.script(
-                    src: staticUrls.getAssetUrl('/static/highlight/init.js')),
+                  src: staticUrls
+                      .getAssetUrl('/static/highlight/highlight.pack.js'),
+                  defer: true,
+                  attributes: {
+                    'onload': staticUrls
+                        .getAssetContentAsString('/static/highlight/init.js'),
+                  },
+                ),
+                // d.script(
+                //   src: staticUrls.getAssetUrl('/static/highlight/init.js'),
+                //   defer: true,
+                // ),
               ]),
             if (schemaOrgSearchActionJson != null)
               d.ldJson(schemaOrgSearchActionJson),

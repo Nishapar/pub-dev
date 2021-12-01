@@ -193,6 +193,16 @@ class StaticUrls {
       return file.cacheableUrl;
     }
   }
+
+  /// Returns the content of the static resource as a string.
+  String getAssetContentAsString(String requestPath) {
+    final file = staticFileCache.getFile(requestPath);
+    if (file == null) {
+      throw Exception('Static resource not found: $requestPath');
+    } else {
+      return file.contentAsString;
+    }
+  }
 }
 
 Future<DateTime> _detectLastModified(Directory dir) async {
