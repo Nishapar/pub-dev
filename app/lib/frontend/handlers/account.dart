@@ -5,6 +5,7 @@
 import 'dart:io';
 
 import 'package:_pub_shared/data/account_api.dart';
+import 'package:googleapis/oauth2/v2.dart';
 import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
@@ -30,6 +31,39 @@ final _logger = Logger('account_handler');
 
 /// Handles requests for /authorized
 shelf.Response authorizedHandler(_) => htmlResponse(renderAuthorizedPage());
+
+/// Handles GET /sign-in
+Future<shelf.Response> startSignInHandler(shelf.Request request) async {
+  final redirectUrl =
+      request.requestedUri.replace(path: '/oauth2-callback').toString();
+  // Using https://developers.google.com/identity/protocols/oauth2/web-server#httprest_1
+  final oauth2Url =
+      Uri.parse('https://accounts.google.com/o/oauth2/v2/auth').replace(
+    queryParameters: {
+      'client_id': activeConfiguration.pubSiteAudience,
+      'redirect_uri': redirectUrl,
+      'response_type': 'code',
+      'scope': [Oauth2Api.openidScope, Oauth2Api.userinfoEmailScope].join(','),
+      'state': 'state-1',
+    },
+  ).toString();
+  return redirectResponse(
+    oauth2Url,
+    // headers: session_cookie.createClientSessionCookie(
+    //   sessionId: sessionId,
+    //   maxAge: maxAge,
+    // ),
+  );
+}
+
+/// Handles GET /oauth2-callback
+Future<shelf.Response> oauth2CallbackHandler(shelf.Request request) async {
+  return jsonResponse({
+    'status': 'OK',
+    'headers': request.headersAll,
+    'parameters': request.requestedUri.queryParametersAll,
+  });
+}
 
 /// Handles POST /api/account/session
 Future<shelf.Response> updateSessionHandler(

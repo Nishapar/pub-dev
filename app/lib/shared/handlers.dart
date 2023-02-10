@@ -30,7 +30,12 @@ const jsonResponseHeaders = <String, String>{
 final _logger = Logger('pub.shared.handler');
 final _prettyJson = JsonUtf8Encoder('  ');
 
-shelf.Response redirectResponse(String url) => shelf.Response.seeOther(url);
+shelf.Response redirectResponse(
+  String url, {
+  Map<String, Object>? headers,
+}) {
+  return shelf.Response.seeOther(url, headers: headers);
+}
 
 shelf.Response redirectToSearch(String query) {
   return redirectResponse(urls.searchUrl(q: query));

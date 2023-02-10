@@ -38,7 +38,7 @@ const _fakeClientAudience = 'fake-client-audience';
 
 /// Special value to indicate that the site is running in fake mode, and the
 /// client side authentication should use the fake authentication tokens.
-const _fakeSiteAudience = 'fake-site-audience';
+const _fakeSiteAudience = '621485135717-idb8t8nnguphtu2drfn2u4ig7r56rm6n.apps.googleusercontent.com';
 
 /// Special value to indicate that the external client is running in fake mode.
 const _fakeExternalAudience = 'https://pub.dev';
